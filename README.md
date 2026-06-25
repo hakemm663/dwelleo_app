@@ -168,11 +168,11 @@ Dwelleo Mobile App should help:
 |---|---|
 | Framework | Flutter / Dart |
 | Architecture | Clean Architecture + feature-first modules |
-| State Management | Bloc/Cubit or Riverpod |
-| Networking | Dio + interceptors + Retrofit generation |
-| Models | Freezed + json_serializable |
-| Dependency Injection | get_it + injectable |
-| Local Storage | Drift / SQLite, SharedPreferences |
+| State Management | Bloc/Cubit (only — no Riverpod/Provider/GetX) |
+| Networking | Dio + interceptors (plain datasources — no Retrofit) |
+| Models | Hand-written `fromJson`/`toJson` + `sealed class` state (no codegen) |
+| Dependency Injection | get_it (manual registration — no injectable) |
+| Local Storage | Drift / SQLite (SQLCipher), SharedPreferences |
 | Secure Storage | flutter_secure_storage |
 | Firebase | Core, Messaging, Analytics, Crashlytics, Performance, Remote Config, App Check |
 | Maps | google_maps_flutter + geolocator |
@@ -189,7 +189,7 @@ This project follows Clean Architecture with clear boundaries between UI, domain
 Presentation Layer
   ├─ Screens
   ├─ Widgets
-  ├─ Bloc/Cubit or Riverpod Providers
+  ├─ Bloc/Cubit
   └─ View Models / UI State
 
 Domain Layer
@@ -516,18 +516,12 @@ APP_STORE_CONNECT_ISSUER_ID
 APP_STORE_CONNECT_PRIVATE_KEY
 ```
 
-## Code Generation
+## Localization Generation
 
-Run:
-
-```bash
-dart run build_runner build --delete-conflicting-outputs
-```
-
-Watch mode:
+Run after modifying any `.arb` file:
 
 ```bash
-dart run build_runner watch --delete-conflicting-outputs
+flutter gen-l10n
 ```
 
 ## App Icons and Splash Screen
@@ -561,7 +555,7 @@ assets/images/splash/dwelleo_splash_android12_dark.png
 main
   Production-ready branch. Protected.
 
-develop
+development
   Integration branch. Protected.
 
 feature/<name>
@@ -579,7 +573,7 @@ release/<version>
 
 ### Protection Rules
 
-Apply to `main` and `develop`:
+Apply to `main` and `development`:
 
 - Require pull request before merge.
 - Require at least one approval.
@@ -599,9 +593,9 @@ name: Flutter CI
 
 on:
   pull_request:
-    branches: [develop, main]
+    branches: [development, main]
   push:
-    branches: [develop, main]
+    branches: [development, main]
 
 jobs:
   analyze-test-build:
@@ -675,7 +669,7 @@ jobs:
 dart format --set-exit-if-changed .
 flutter analyze
 flutter test --coverage
-dart run build_runner build --delete-conflicting-outputs
+flutter gen-l10n
 flutter build apk --debug --flavor dev -t lib/main_dev.dart
 ```
 
