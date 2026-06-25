@@ -3,7 +3,8 @@
 > Senior Flutter implementation plan for a bilingual Arabic/English AI-powered real-estate marketplace inspired by Dwelleo’s public web experience.
 
 <p align="center">
-  <img src="assets/images/branding/dwelleo_logo_light.png" alt="Dwelleo Mobile App" width="180" />
+  <img width="1367" height="270" alt="image" src="https://github.com/user-attachments/assets/cf2335c8-c707-4116-b1ba-727df169f9e4" alt="Dwelleo Mobile App" width="180"/>
+
 </p>
 
 <p align="center">
