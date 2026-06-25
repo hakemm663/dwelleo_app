@@ -43,3 +43,44 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# ── Secrets & credentials (NEVER commit) ────────────────────────────────────
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Android signing
+*.jks
+*.keystore
+key.properties
+/android/key.properties
+
+# iOS signing
+*.p12
+*.mobileprovision
+*.cer
+*.certSigningRequest
+
+# Firebase / Google services
+google-services.json
+GoogleService-Info.plist
+firebase_options*.dart
+firebase_app_id_file.json
+
+# Service accounts & API keys
+service-account.json
+*.pem
+secrets.json
+
+# Fastlane
+fastlane/Appfile
+fastlane/Matchfile
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Dart-define / flavors (local overrides)
+dart_defines/
+*.dartdefines
