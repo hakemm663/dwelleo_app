@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import '../config/app_config.dart';
 import '../constants/app_constants.dart';
 import '../errors/api_result.dart';
 import '../errors/failure.dart';
@@ -13,7 +14,7 @@ class DioClient {
   }) {
     final dio = Dio(
       BaseOptions(
-        baseUrl: baseUrl ?? BaseUrls.api,
+        baseUrl: baseUrl ?? AppConfig.instance.apiBaseUrl,
         connectTimeout: const Duration(
           milliseconds: AppConstants.connectTimeout,
         ),

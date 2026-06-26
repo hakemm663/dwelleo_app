@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/routing/route_paths.dart';
 
-enum UserRole { buyer, renter, seller, developer }
-
 class RoleSelectionScreen extends StatelessWidget {
   const RoleSelectionScreen({super.key});
 
@@ -26,7 +24,6 @@ class RoleSelectionScreen extends StatelessWidget {
               _RoleTile(
                 icon: Icons.search,
                 label: 'Buy a Property',
-                role: UserRole.buyer,
                 onTap: () =>
                     context.go(RoutePaths.propertySearchPath('for-sale')),
               ),
@@ -34,7 +31,6 @@ class RoleSelectionScreen extends StatelessWidget {
               _RoleTile(
                 icon: Icons.home_outlined,
                 label: 'Rent a Property',
-                role: UserRole.renter,
                 onTap: () =>
                     context.go(RoutePaths.propertySearchPath('for-rent')),
               ),
@@ -42,14 +38,12 @@ class RoleSelectionScreen extends StatelessWidget {
               _RoleTile(
                 icon: Icons.sell_outlined,
                 label: 'Sell / List a Property',
-                role: UserRole.seller,
                 onTap: () => context.go(RoutePaths.propertySearchPath()),
               ),
               const SizedBox(height: 12),
               _RoleTile(
                 icon: Icons.business_outlined,
                 label: 'Developer / Broker',
-                role: UserRole.developer,
                 onTap: () => context.go(RoutePaths.propertySearchPath()),
               ),
               const SizedBox(height: 24),
@@ -70,13 +64,11 @@ class _RoleTile extends StatelessWidget {
   const _RoleTile({
     required this.icon,
     required this.label,
-    required this.role,
     required this.onTap,
   });
 
   final IconData icon;
   final String label;
-  final UserRole role;
   final VoidCallback onTap;
 
   @override

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 
+import '../config/app_config.dart';
 import '../constants/app_constants.dart';
 import '../localization/locale_cubit.dart';
 import '../network/dio_client.dart';
@@ -35,7 +36,7 @@ Future<void> setupServiceLocator() async {
   // but carries LocaleInterceptor so the server sees the correct locale.
   final refreshDio = Dio(
     BaseOptions(
-      baseUrl: BaseUrls.api,
+      baseUrl: AppConfig.instance.apiBaseUrl,
       connectTimeout: const Duration(milliseconds: AppConstants.connectTimeout),
       receiveTimeout: const Duration(milliseconds: AppConstants.receiveTimeout),
       headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
@@ -44,7 +45,7 @@ Future<void> setupServiceLocator() async {
 
   sl.registerLazySingleton<Dio>(
     () => DioClient.create(
-      baseUrl: BaseUrls.api,
+      baseUrl: AppConfig.instance.apiBaseUrl,
       interceptors: [
         LocaleInterceptor(sl<SecureStorage>()),
         AuthInterceptor(sl<SecureStorage>(), refreshDio),

@@ -84,3 +84,12 @@ fastlane/test_output
 # Dart-define / flavors (local overrides)
 dart_defines/
 *.dartdefines
+
+# Per-flavor Firebase iOS configs (provided locally / via CI)
+ios/config/GoogleService-Info-*.plist
+
+# iOS build artifacts
+ios/build/
+
+# Flutter DevTools (auto-generated)
+devtools_options.yaml

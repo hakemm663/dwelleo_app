@@ -48,7 +48,7 @@ android {
             versionNameSuffix = "-staging"
             resValue("string", "app_name", "Dwelleo Staging")
         }
-        create("prod") {
+        create("production") {
             dimension = "environment"
             resValue("string", "app_name", "Dwelleo")
         }

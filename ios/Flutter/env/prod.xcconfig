@@ -1,5 +1,0 @@
-#include "../Release.xcconfig"
-FLUTTER_TARGET=lib/main_prod.dart
-PRODUCT_BUNDLE_IDENTIFIER=sa.dwelleo.app
-DISPLAY_NAME=Dwelleo
-FLAVOR=prod

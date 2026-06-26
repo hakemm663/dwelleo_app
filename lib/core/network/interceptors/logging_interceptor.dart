@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import '../../constants/app_constants.dart';
+import '../../config/app_config.dart';
 
 class LoggingInterceptor extends Interceptor {
   static const _redactedKeys = {
@@ -13,7 +13,7 @@ class LoggingInterceptor extends Interceptor {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    if (!FlavorConstants.isProd) {
+    if (!AppConfig.instance.isProduction) {
       final safeHeaders = _redactHeaders(options.headers);
       // ignore: avoid_print
       print('[NET] --> ${options.method} ${options.uri} headers:$safeHeaders');
@@ -23,7 +23,7 @@ class LoggingInterceptor extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    if (!FlavorConstants.isProd) {
+    if (!AppConfig.instance.isProduction) {
       // ignore: avoid_print
       print('[NET] <-- ${response.statusCode} ${response.requestOptions.uri}');
     }
@@ -32,7 +32,7 @@ class LoggingInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    if (!FlavorConstants.isProd) {
+    if (!AppConfig.instance.isProduction) {
       // ignore: avoid_print
       print(
         '[NET] ERR ${err.response?.statusCode} ${err.requestOptions.uri}: ${err.message}',
