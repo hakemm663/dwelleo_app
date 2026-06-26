@@ -1,4 +1,4 @@
-package com.example.dwelleo_app
+package sa.dwelleo.app
 
 import io.flutter.embedding.android.FlutterActivity
 

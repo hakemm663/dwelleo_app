@@ -4,10 +4,20 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Dwelleo uses your location to show nearby properties and travel times.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Dwelleo uses the camera to let you add photos to your property listings.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Dwelleo uses the microphone for AI voice search.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Dwelleo accesses your photos to attach images to property listings.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Dwelleo uses Face ID to secure access to your account.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Dwelleo App</string>
+	<string>$(DISPLAY_NAME)</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
