@@ -2,6 +2,10 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
+    // Firebase: must come after the Android + Flutter plugins.
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
+    id("com.google.firebase.firebase-perf")
 }
 
 android {
@@ -20,10 +24,13 @@ android {
 
     defaultConfig {
         applicationId = "sa.dwelleo.app"
-        minSdk = flutter.minSdkVersion
+        // Firebase and freeRASP require API 23+. This is the floor (Android 6.0),
+        // which still supports devices well below Android 12.
+        minSdk = maxOf(23, flutter.minSdkVersion)
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        multiDexEnabled = true
     }
 
     flavorDimensions += "environment"
