@@ -94,6 +94,7 @@ flutter:
     - assets/images/launcher/
     - assets/images/splash/
     - assets/images/onboarding/
+    - assets/images/brand/
     - assets/icons/
     - assets/svg/
   # For details regarding fonts from package dependencies,

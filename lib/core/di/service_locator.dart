@@ -9,6 +9,7 @@ import '../network/dio_client.dart';
 import '../network/interceptors/auth_interceptor.dart';
 import '../network/interceptors/locale_interceptor.dart';
 import '../storage/secure_storage.dart';
+import '../theme/theme_cubit.dart';
 import '../../features/properties/data/datasources/property_remote_data_source.dart';
 import '../../features/properties/data/repositories/property_repository_impl.dart';
 import '../../features/properties/domain/repositories/property_repository.dart';
@@ -28,8 +29,9 @@ Future<void> setupServiceLocator() async {
     () => SecureStorage(sl<FlutterSecureStorage>()),
   );
 
-  // ── Locale ───────────────────────────────────────────────────────────────
+  // ── Locale & Theme ─────────────────────────────────────────────────────────
   sl.registerLazySingleton<LocaleCubit>(() => LocaleCubit(sl<SecureStorage>()));
+  sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit(sl<SecureStorage>()));
 
   // ── Network ──────────────────────────────────────────────────────────────
   // Dedicated Dio for token refresh — no AuthInterceptor to prevent re-entry,
@@ -39,7 +41,10 @@ Future<void> setupServiceLocator() async {
       baseUrl: AppConfig.instance.apiBaseUrl,
       connectTimeout: const Duration(milliseconds: AppConstants.connectTimeout),
       receiveTimeout: const Duration(milliseconds: AppConstants.receiveTimeout),
-      headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
     ),
   )..interceptors.add(LocaleInterceptor(sl<SecureStorage>()));
 

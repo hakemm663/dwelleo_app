@@ -37,15 +37,9 @@ class LanguageSelectionScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
-              _LanguageButton(
-                label: 'English',
-                languageCode: 'en',
-              ),
+              _LanguageButton(label: 'English', languageCode: 'en'),
               const SizedBox(height: 16),
-              _LanguageButton(
-                label: 'العربية',
-                languageCode: 'ar',
-              ),
+              _LanguageButton(label: 'العربية', languageCode: 'ar'),
               const Spacer(),
             ],
           ),
@@ -66,7 +60,7 @@ class _LanguageButton extends StatelessWidget {
     return OutlinedButton(
       onPressed: () async {
         await context.read<LocaleCubit>().setLocale(languageCode);
-        if (context.mounted) context.go(RoutePaths.roleSelection);
+        if (context.mounted) context.go(RoutePaths.login);
       },
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 16),

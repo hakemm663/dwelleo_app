@@ -80,7 +80,8 @@ class AuthInterceptor extends Interceptor {
       );
 
       final newAccess = response.data?[AppConstants.accessTokenKey] as String?;
-      final newRefresh = response.data?[AppConstants.refreshTokenKey] as String?;
+      final newRefresh =
+          response.data?[AppConstants.refreshTokenKey] as String?;
       if (newAccess == null) {
         throw Exception('Missing access_token in refresh response');
       }
