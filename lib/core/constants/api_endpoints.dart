@@ -70,12 +70,14 @@ abstract final class ApiEndpoints {
   static const String userProjects = '$_base/user/projects';
   static const String userAds = '$_base/user/ads';
   static const String userSubscriptions = '$_base/user/subscriptions';
-  static const String userSubscriptionInvoice = '$_base/user/subscriptions/invoice';
+  static const String userSubscriptionInvoice =
+      '$_base/user/subscriptions/invoice';
 
   // ---- AI services (authenticated) -----------------------------------------
   static const String aiHealth = '$_base/user/ai/health';
   @bodyPending
-  static const String aiApartmentPrediction = '$_base/user/ai/apartment-prediction';
+  static const String aiApartmentPrediction =
+      '$_base/user/ai/apartment-prediction';
   @bodyPending
   static const String aiVillaPrediction = '$_base/user/ai/villa-prediction';
   @bodyPending
@@ -84,7 +86,8 @@ abstract final class ApiEndpoints {
   @bodyPending
   static const String aiPoiNearby = '$_base/user/ai/poi/nearby';
   @bodyPending
-  static const String aiVoiceProcess = '$_base/user/ai/voice/conversations/process';
+  static const String aiVoiceProcess =
+      '$_base/user/ai/voice/conversations/process';
 
   // ---- Leads / contact / misc ----------------------------------------------
   @bodyPending
@@ -102,14 +105,16 @@ abstract final class ApiEndpoints {
   @bodyPending
   static const String upload = '$_base/upload';
   @bodyPending
-  static const String listingsGenerateAiContent = '$_base/listings/generate-ai-content';
+  static const String listingsGenerateAiContent =
+      '$_base/listings/generate-ai-content';
 }
 
 /// Spatie query-builder filter keys for the property search (confirmed from the web bundle).
 /// Usage: `?filter[listing_type]=for-sale&filter[city_id]=..&filter[min_price]=..&page=N`.
 /// (Exact pagination envelope of the FILTERED search is still to be captured from a live call.)
 abstract final class PropertyFilters {
-  static const String listingType = 'filter[listing_type]'; // for-sale | for-rent
+  static const String listingType =
+      'filter[listing_type]'; // for-sale | for-rent
   static const String propertyType = 'filter[property_type]';
   static const String propertyTypes = 'filter[property_types]';
   static const String unitType = 'filter[unit_type]';
@@ -137,7 +142,8 @@ abstract final class PropertyFilters {
   static const String maxHandoverDate = 'filter[max_handover_date]';
   static const String commuteTime = 'filter[commute_time]';
   static const String languageSpoken = 'filter[language_spoken]';
-  static const String sortCreatedAt = 'sort[created_at]'; // value: created_at | -created_at
+  static const String sortCreatedAt =
+      'sort[created_at]'; // value: created_at | -created_at
   static const String page = 'page';
 }
 

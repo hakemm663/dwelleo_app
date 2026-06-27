@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/role_selection_screen.dart';
 import '../../features/onboarding/presentation/screens/language_selection_screen.dart';
-import '../../features/onboarding/presentation/screens/role_selection_screen.dart';
+import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/properties/presentation/screens/properties_list_screen.dart';
 import '../../features/properties/presentation/screens/property_detail_screen.dart';
 import 'route_paths.dart';
@@ -9,18 +12,31 @@ import 'route_paths.dart';
 class AppRouter {
   AppRouter._();
 
+  // NOTE: a "skip onboarding once completed + auth" redirect guard will be added
+  // when the login/signup flow lands. It is intentionally omitted now so the
+  // onboarding flow is always reachable while we build and verify it.
   static final GoRouter router = GoRouter(
-    initialLocation: RoutePaths.languageSelection,
+    initialLocation: RoutePaths.onboarding,
     debugLogDiagnostics: true,
     routes: [
       GoRoute(
-        path: RoutePaths.languageSelection,
-        name: RoutePaths.languageSelection,
+        path: RoutePaths.onboarding,
+        name: RoutePaths.onboarding,
+        builder: (context, state) => const OnboardingScreen(),
+      ),
+      GoRoute(
+        path: RoutePaths.language,
+        name: RoutePaths.language,
         builder: (context, state) => const LanguageSelectionScreen(),
       ),
       GoRoute(
-        path: RoutePaths.roleSelection,
-        name: RoutePaths.roleSelection,
+        path: RoutePaths.login,
+        name: RoutePaths.login,
+        builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: RoutePaths.signupRole,
+        name: RoutePaths.signupRole,
         builder: (context, state) => const RoleSelectionScreen(),
       ),
       GoRoute(

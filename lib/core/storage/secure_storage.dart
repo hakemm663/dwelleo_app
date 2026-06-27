@@ -42,6 +42,13 @@ class SecureStorage {
 
   Future<String?> getLocale() => _storage.read(key: AppConstants.localeKey);
 
+  /// Theme mode persisted as 'light' | 'dark' | 'system'.
+  Future<void> setThemeMode(String mode) =>
+      _storage.write(key: AppConstants.themeModeKey, value: mode);
+
+  Future<String?> getThemeMode() =>
+      _storage.read(key: AppConstants.themeModeKey);
+
   Future<void> setOnboardingDone() =>
       _storage.write(key: AppConstants.onboardingDoneKey, value: 'true');
 

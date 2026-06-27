@@ -9,16 +9,19 @@ import 'app/app.dart';
 import 'core/config/app_config.dart';
 import 'core/di/service_locator.dart';
 import 'core/localization/locale_cubit.dart';
+import 'core/theme/theme_cubit.dart';
 
 /// Single startup path shared by every flavor entry point
 /// (`main_dev` / `main_staging` / `main_production`). The [flavor] is passed in
 /// by the entry point, so the running environment is unambiguous.
 Future<void> bootstrap(Flavor flavor) async {
+  // Must run before the zone is established so binding errors are not swallowed
+  // by the zone handler before the handler itself is set up.
+  WidgetsFlutterBinding.ensureInitialized();
+  AppConfig.init(flavor);
+
   runZonedGuarded(
     () async {
-      WidgetsFlutterBinding.ensureInitialized();
-      AppConfig.init(flavor);
-
       try {
         // Reads the per-flavor native config: android/app/google-services.json
         // (selected by applicationId) and the GoogleService-Info.plist copied
@@ -37,6 +40,7 @@ Future<void> bootstrap(Flavor flavor) async {
 
       await setupServiceLocator();
       await sl<LocaleCubit>().init();
+      await sl<ThemeCubit>().init();
 
       runApp(const DwelleoApp());
     },

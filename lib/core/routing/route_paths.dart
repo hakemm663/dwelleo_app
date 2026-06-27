@@ -2,8 +2,18 @@
 /// GoRoute exists — keep this list in sync with the router so every path
 /// resolves.
 abstract final class RoutePaths {
-  static const String languageSelection = '/';
-  static const String roleSelection = '/role';
+  /// First-run value-prop onboarding (entry point).
+  static const String onboarding = '/';
+
+  /// Optional standalone language picker (the in-app-bar toggle is primary).
+  static const String language = '/language';
+
+  /// Login (Welcome Back).
+  static const String login = '/login';
+
+  /// Account-type selection — part of the SIGN-UP flow, not onboarding.
+  static const String signupRole = '/signup/role';
+
   static const String propertySearch = '/properties';
   static const String propertyDetail = '/properties/:slug';
 

@@ -121,8 +121,13 @@ class PropertyLocation extends Equatable {
   });
 
   @override
-  List<Object?> get props =>
-      [address, point, adLicenseNumber, direction, buildingYear];
+  List<Object?> get props => [
+    address,
+    point,
+    adLicenseNumber,
+    direction,
+    buildingYear,
+  ];
 }
 
 /// Core domain entity for a Dwelleo property listing.
