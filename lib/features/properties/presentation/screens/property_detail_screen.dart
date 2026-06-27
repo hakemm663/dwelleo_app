@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/formatters.dart';
@@ -37,17 +39,15 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
     return BlocProvider.value(
       value: _cubit,
       child: Scaffold(
-        backgroundColor: AppColors.background,
         body: BlocBuilder<PropertyDetailCubit, PropertyDetailState>(
           builder: (context, state) {
             return switch (state) {
-              PropertyDetailInitial() ||
-              PropertyDetailLoading() => const Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
-              ),
+              PropertyDetailInitial() || PropertyDetailLoading() =>
+                const Center(child: CircularProgressIndicator()),
               PropertyDetailError(:final message) => _DetailError(
                 message: message,
-                onRetry: () => context.read<PropertyDetailCubit>().load(widget.slug),
+                onRetry: () =>
+                    context.read<PropertyDetailCubit>().load(widget.slug),
               ),
               PropertyDetailLoaded(:final property) => _DetailBody(
                 property: property,
@@ -55,6 +55,12 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
             };
           },
         ),
+        bottomNavigationBar:
+            BlocBuilder<PropertyDetailCubit, PropertyDetailState>(
+              builder: (context, state) => state is PropertyDetailLoaded
+                  ? _ContactBar(owner: state.property.owner)
+                  : const SizedBox.shrink(),
+            ),
       ),
     );
   }
@@ -69,12 +75,25 @@ class _DetailBody extends StatefulWidget {
 }
 
 class _DetailBodyState extends State<_DetailBody> {
-  late final PageController _pageController;
+  final _pageController = PageController();
+  int _imageIndex = 0;
+  late List<MediaImage> _images;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
+    _images = _buildImages();
+  }
+
+  @override
+  void didUpdateWidget(_DetailBody old) {
+    super.didUpdateWidget(old);
+    if (old.property != widget.property) _images = _buildImages();
+  }
+
+  List<MediaImage> _buildImages() {
+    final p = widget.property;
+    return [if (p.coverImage != null) p.coverImage!, ...p.images];
   }
 
   @override
@@ -86,84 +105,114 @@ class _DetailBodyState extends State<_DetailBody> {
   @override
   Widget build(BuildContext context) {
     final property = widget.property;
-    final images = [
-      if (property.coverImage != null) property.coverImage!,
-      ...property.images,
-    ];
+    final scheme = Theme.of(context).colorScheme;
+
     return CustomScrollView(
       slivers: [
         SliverAppBar(
-          expandedHeight: 280,
+          expandedHeight: 300,
           pinned: true,
-          backgroundColor: AppColors.surfaceDark,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          surfaceTintColor: Colors.transparent,
           flexibleSpace: FlexibleSpaceBar(
-            background: images.isEmpty
-                ? const ColoredBox(color: AppColors.divider)
-                : PageView.builder(
+            background: Stack(
+              fit: StackFit.expand,
+              children: [
+                if (_images.isEmpty)
+                  const _ImagePlaceholder()
+                else
+                  PageView.builder(
                     controller: _pageController,
-                    itemCount: images.length,
+                    onPageChanged: (i) => setState(() => _imageIndex = i),
+                    itemCount: _images.length,
                     itemBuilder: (_, i) => CachedNetworkImage(
-                      imageUrl: images[i].path,
+                      imageUrl: _images[i].path,
                       fit: BoxFit.cover,
-                      placeholder: (ctx, url) =>
-                          const ColoredBox(color: AppColors.divider),
-                      errorWidget: (ctx, url, err) =>
-                          const ColoredBox(color: AppColors.divider),
+                      placeholder: (ctx, _) => const _ImagePlaceholder(),
+                      errorWidget: (ctx, url, error) =>
+                          const _ImagePlaceholder(),
                     ),
                   ),
+                if (_images.length > 1)
+                  Positioned(
+                    bottom: 12,
+                    left: 0,
+                    right: 0,
+                    child: _GalleryDots(
+                      count: _images.length,
+                      index: _imageIndex,
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  Formatters.price(property.price),
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
-                  ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      AppSvg.sar,
+                      width: 22,
+                      height: 22,
+                      colorFilter: ColorFilter.mode(
+                        scheme.onSurface,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      Formatters.priceValue(property.price),
+                      style: const TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const Spacer(),
+                    if (property.listingType != null)
+                      _Pill(
+                        label: property.listingType!.isForRent
+                            ? 'For Rent'
+                            : 'For Sale',
+                      ),
+                  ],
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
                 Text(
                   property.title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
-                  ),
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
                 if (property.location?.address != null) ...[
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(Icons.location_on_outlined,
-                          size: 16, color: AppColors.textSecondary),
+                      Icon(
+                        Icons.location_on_outlined,
+                        size: 16,
+                        color: scheme.onSurfaceVariant,
+                      ),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
                           property.location!.address!,
-                          style: const TextStyle(
-                            color: AppColors.textSecondary,
-                          ),
+                          style: TextStyle(color: scheme.onSurfaceVariant),
                         ),
                       ),
                     ],
                   ),
                 ],
-                const SizedBox(height: 16),
+                const SizedBox(height: 18),
                 _Specs(property: property),
                 if (property.description?.isNotEmpty == true) ...[
                   const _SectionTitle('About this property'),
                   Text(
                     property.description!,
-                    style: const TextStyle(
-                      height: 1.5,
-                      color: AppColors.textPrimary,
-                    ),
+                    style: TextStyle(height: 1.55, color: scheme.onSurface),
                   ),
                 ],
                 if (property.amenities.isNotEmpty) ...[
@@ -173,11 +222,7 @@ class _DetailBodyState extends State<_DetailBody> {
                     runSpacing: 8,
                     children: [
                       for (final a in property.amenities)
-                        Chip(
-                          label: Text(a.title),
-                          backgroundColor: AppColors.surface,
-                          side: const BorderSide(color: AppColors.divider),
-                        ),
+                        Chip(label: Text(a.title)),
                     ],
                   ),
                 ],
@@ -189,18 +234,81 @@ class _DetailBodyState extends State<_DetailBody> {
                   const SizedBox(height: 16),
                   Text(
                     'Ad license: ${property.location!.adLicenseNumber}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.textSecondary,
+                      color: scheme.onSurfaceVariant,
                     ),
                   ),
                 ],
-                const SizedBox(height: 24),
+                const SizedBox(height: 8),
               ],
             ),
           ),
         ),
       ],
+    );
+  }
+}
+
+class _ImagePlaceholder extends StatelessWidget {
+  const _ImagePlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return ColoredBox(
+      color: scheme.surfaceContainerHighest,
+      child: Icon(Icons.image_outlined, color: scheme.onSurfaceVariant),
+    );
+  }
+}
+
+class _GalleryDots extends StatelessWidget {
+  final int count;
+  final int index;
+  const _GalleryDots({required this.count, required this.index});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(count, (i) {
+        final active = i == index;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          margin: const EdgeInsets.symmetric(horizontal: 3),
+          width: active ? 18 : 6,
+          height: 6,
+          decoration: BoxDecoration(
+            color: active ? AppColors.primary : Colors.white70,
+            borderRadius: BorderRadius.circular(3),
+          ),
+        );
+      }),
+    );
+  }
+}
+
+class _Pill extends StatelessWidget {
+  final String label;
+  const _Pill({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: AppColors.primary,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          color: AppColors.ink,
+          fontWeight: FontWeight.w700,
+          fontSize: 12,
+        ),
+      ),
     );
   }
 }
@@ -211,38 +319,95 @@ class _Specs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = <(IconData, String)>[
+    final c = Theme.of(context).colorScheme.onSurface;
+    final items = <Widget>[
       if (property.bedrooms != null)
-        (Icons.bed_outlined, '${property.bedrooms} Beds'),
+        _SpecChip(
+          svg: AppSvg.bed,
+          label: '${property.bedrooms} Beds',
+          color: c,
+        ),
       if (property.bathrooms != null)
-        (Icons.bathtub_outlined, '${property.bathrooms} Baths'),
+        _SpecChip(
+          svg: AppSvg.bath,
+          label: '${property.bathrooms} Baths',
+          color: c,
+        ),
       if (property.areaSqm != null)
-        (Icons.square_foot_outlined, Formatters.area(property.areaSqm)),
+        _SpecChip(
+          svg: AppSvg.sqf,
+          label: Formatters.area(property.areaSqm),
+          color: c,
+        ),
       if (property.hasMaidRoom)
-        (Icons.cleaning_services_outlined, '${property.maidRoom} Maid'),
+        _SpecIcon(
+          icon: Icons.cleaning_services_outlined,
+          label: '${property.maidRoom} Maid',
+          color: c,
+        ),
       if (property.furnishingStatus != null)
-        (Icons.chair_outlined, _pretty(property.furnishingStatus!)),
+        _SpecIcon(
+          icon: Icons.chair_outlined,
+          label: _pretty(property.furnishingStatus!),
+          color: c,
+        ),
     ];
-    return Wrap(
-      spacing: 16,
-      runSpacing: 10,
-      children: [
-        for (final (icon, label) in items)
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 18, color: AppColors.primaryDark),
-              const SizedBox(width: 4),
-              Text(label,
-                  style: const TextStyle(color: AppColors.textPrimary)),
-            ],
-          ),
-      ],
-    );
+    return Wrap(spacing: 18, runSpacing: 12, children: items);
   }
 
   static String _pretty(String s) =>
       s.replaceAll('_', ' ').replaceAll('-', ' ');
+}
+
+class _SpecChip extends StatelessWidget {
+  final String svg;
+  final String label;
+  final Color color;
+  const _SpecChip({
+    required this.svg,
+    required this.label,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SvgPicture.asset(
+          svg,
+          width: 18,
+          height: 18,
+          colorFilter: ColorFilter.mode(AppColors.primaryDark, BlendMode.srcIn),
+        ),
+        const SizedBox(width: 5),
+        Text(label, style: TextStyle(color: color)),
+      ],
+    );
+  }
+}
+
+class _SpecIcon extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  const _SpecIcon({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 18, color: AppColors.primaryDark),
+        const SizedBox(width: 5),
+        Text(label, style: TextStyle(color: color)),
+      ],
+    );
+  }
 }
 
 class _OwnerCard extends StatelessWidget {
@@ -251,24 +416,25 @@ class _OwnerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.only(top: 4),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.divider),
+        color: scheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: scheme.outline),
       ),
       child: Row(
         children: [
           CircleAvatar(
-            radius: 22,
+            radius: 24,
             backgroundColor: AppColors.primaryLight,
             backgroundImage: owner.image?.path != null
                 ? CachedNetworkImageProvider(owner.image!.path)
                 : null,
             child: owner.image?.path == null
-                ? const Icon(Icons.business, color: AppColors.surface)
+                ? const Icon(Icons.business, color: AppColors.ink)
                 : null,
           ),
           const SizedBox(width: 12),
@@ -283,25 +449,65 @@ class _OwnerCard extends StatelessWidget {
                         owner.name,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontWeight: FontWeight.w600),
+                        style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
                     ),
                     if (owner.verified) ...[
                       const SizedBox(width: 4),
-                      const Icon(Icons.verified,
-                          size: 16, color: AppColors.info),
+                      const Icon(
+                        Icons.verified,
+                        size: 16,
+                        color: AppColors.info,
+                      ),
                     ],
                   ],
                 ),
                 if (owner.userType != null)
                   Text(
                     owner.userType!.replaceAll('_', ' '),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.textSecondary,
+                      color: scheme.onSurfaceVariant,
                     ),
                   ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ContactBar extends StatelessWidget {
+  final PropertyOwner? owner;
+  const _ContactBar({required this.owner});
+
+  void _todo(BuildContext context, String label) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('$label — coming soon')));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      minimum: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+      child: Row(
+        children: [
+          Expanded(
+            child: FilledButton.icon(
+              onPressed: () => _todo(context, 'Call'),
+              icon: const Icon(Icons.phone, size: 18),
+              label: const Text('Call'),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: OutlinedButton.icon(
+              onPressed: () => _todo(context, 'WhatsApp'),
+              icon: SvgPicture.asset(AppSvg.whatsapp, width: 18, height: 18),
+              label: const Text('WhatsApp'),
             ),
           ),
         ],
@@ -317,15 +523,8 @@ class _SectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 20, bottom: 8),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w700,
-          color: AppColors.textPrimary,
-        ),
-      ),
+      padding: const EdgeInsets.only(top: 22, bottom: 10),
+      child: Text(text, style: Theme.of(context).textTheme.titleMedium),
     );
   }
 }

@@ -14,7 +14,9 @@ void main() {
     await sl.reset();
   });
 
-  testWidgets('DwelleoApp renders without crashing', (WidgetTester tester) async {
+  testWidgets('DwelleoApp renders without crashing', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(const DwelleoApp());
     expect(find.byType(DwelleoApp), findsOneWidget);
   });

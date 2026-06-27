@@ -63,7 +63,6 @@ class _PropertiesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(title: Text(_title)),
       body: BlocBuilder<PropertiesCubit, PropertiesState>(
         builder: (context, state) {
@@ -77,7 +76,8 @@ class _PropertiesView extends StatelessWidget {
               properties.isEmpty
                   ? const _EmptyView()
                   : _PropertiesGrid(
-                      onRefresh: () => context.read<PropertiesCubit>().refresh(),
+                      onRefresh: () =>
+                          context.read<PropertiesCubit>().refresh(),
                       properties: properties,
                     ),
           };
@@ -105,7 +105,8 @@ class _PropertiesGrid extends StatelessWidget {
           final property = properties[i];
           return PropertyCard(
             property: property,
-            onTap: () => context.push(RoutePaths.propertyDetailPath(property.slug)),
+            onTap: () =>
+                context.push(RoutePaths.propertyDetailPath(property.slug)),
           );
         },
       ),
@@ -130,7 +131,10 @@ class _EmptyView extends StatelessWidget {
         children: [
           Icon(Icons.search_off, size: 48, color: AppColors.textSecondary),
           SizedBox(height: 12),
-          Text('No properties found', style: TextStyle(color: AppColors.textSecondary)),
+          Text(
+            'No properties found',
+            style: TextStyle(color: AppColors.textSecondary),
+          ),
         ],
       ),
     );

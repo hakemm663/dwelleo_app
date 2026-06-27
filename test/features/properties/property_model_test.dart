@@ -118,7 +118,10 @@ void main() {
     test('maps media and collections', () {
       final p = PropertyModel.listFromEnvelope(realEnvelope).first;
       expect(p.coverImage?.path, 'https://s3.example.com/1/cover.jpg');
-      expect(p.coverImage?.displayThumb, 'https://s3.example.com/1/cover_t.jpg');
+      expect(
+        p.coverImage?.displayThumb,
+        'https://s3.example.com/1/cover_t.jpg',
+      );
       expect(p.images, hasLength(2));
       expect(p.amenities, hasLength(2));
       expect(p.tags.first.title, 'New Listing');

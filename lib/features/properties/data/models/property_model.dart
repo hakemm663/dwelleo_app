@@ -120,24 +120,30 @@ abstract final class PropertyModel {
 
   static List<Amenity> _amenities(dynamic v) {
     if (v is! List) return const [];
-    return v.whereType<Map<String, dynamic>>().map((m) {
-      return Amenity(
-        id: _toInt(m['id']) ?? 0,
-        title: (m['title'] ?? m['name'] ?? '').toString(),
-        icon: _image(m['image']) ?? _image(m['icon']),
-      );
-    }).toList(growable: false);
+    return v
+        .whereType<Map<String, dynamic>>()
+        .map((m) {
+          return Amenity(
+            id: _toInt(m['id']) ?? 0,
+            title: (m['title'] ?? m['name'] ?? '').toString(),
+            icon: _image(m['image']) ?? _image(m['icon']),
+          );
+        })
+        .toList(growable: false);
   }
 
   static List<PropertyTag> _tags(dynamic v) {
     if (v is! List) return const [];
-    return v.whereType<Map<String, dynamic>>().map((m) {
-      return PropertyTag(
-        id: _toInt(m['id']) ?? 0,
-        title: (m['title'] ?? m['name'] ?? '').toString(),
-        color: m['color']?.toString(),
-      );
-    }).toList(growable: false);
+    return v
+        .whereType<Map<String, dynamic>>()
+        .map((m) {
+          return PropertyTag(
+            id: _toInt(m['id']) ?? 0,
+            title: (m['title'] ?? m['name'] ?? '').toString(),
+            color: m['color']?.toString(),
+          );
+        })
+        .toList(growable: false);
   }
 
   // ── primitive coercion ──────────────────────────────────────────────────────
