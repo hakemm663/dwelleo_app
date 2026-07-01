@@ -37,6 +37,16 @@ abstract final class AppImage {
   static const String flagAr = '$_b/flag_ar.png';
   static const String wordmarkLight = '$_b/wordmark_light.png';
   static const String wordmarkDark = '$_b/wordmark_dark.png';
+  // Arabic wordmark (logo switches with language, like the website).
+  static const String wordmarkArLight = '$_b/wordmark_ar_light.png';
+  static const String wordmarkArDark = '$_b/wordmark_ar_dark.png';
+
+  /// Locale + theme aware brand wordmark path.
+  static String wordmark({required bool isArabic, required bool isDark}) {
+    if (isArabic) return isDark ? wordmarkArDark : wordmarkArLight;
+    return isDark ? wordmarkDark : wordmarkLight;
+  }
+
   static const String onboardingLight = '$_b/onboarding_light.png';
   static const String onboardingDark = '$_b/onboarding_dark.png';
 }

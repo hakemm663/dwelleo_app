@@ -17,10 +17,13 @@ abstract final class AppTheme {
       seedColor: AppColors.primary,
       brightness: b,
     ).copyWith(
-      primary: AppColors.primary,
-      onPrimary: AppColors.ink,
-      secondary: AppColors.accent,
-      onSecondary: Colors.white,
+      // dwelleo.sa flips its primary action color by theme: purple in light,
+      // lime in dark. Drive the whole ColorScheme from that so every CTA,
+      // selected state, link and focus ring matches the site in both modes.
+      primary: AppColors.accentFor(b),
+      onPrimary: AppColors.onAccentFor(b),
+      secondary: isDark ? AppColors.accent : AppColors.primary,
+      onSecondary: isDark ? Colors.white : AppColors.ink,
       surface: isDark ? AppColors.surfaceDark : AppColors.surface,
       onSurface: isDark ? AppColors.textPrimaryDark : AppColors.textPrimary,
       onSurfaceVariant: isDark
@@ -46,6 +49,8 @@ abstract final class AppTheme {
       brightness: b,
       colorScheme: scheme,
       scaffoldBackgroundColor: bg,
+      // Dwelleo's brand typeface (matches dwelleo.sa exactly).
+      fontFamily: 'RocGrotesk',
       textTheme: _textTheme,
       splashFactory: InkSparkle.splashFactory,
 
@@ -78,12 +83,17 @@ abstract final class AppTheme {
 
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.ink,
+          backgroundColor: AppColors.accentFor(b),
+          foregroundColor: AppColors.onAccentFor(b),
+          // Disabled state mirrors the site exactly: solid zinc-grey #A1A1AA
+          // with a darker label (captured from dwelleo.sa's disabled Sign In).
+          disabledBackgroundColor: const Color(0xFFA1A1AA),
+          disabledForegroundColor: const Color(0xFF3F3F46),
           minimumSize: const Size.fromHeight(54),
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          // dwelleo.sa CTAs use a 14px radius (not a full pill).
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(14),
           ),
         ),
       ),
@@ -94,40 +104,55 @@ abstract final class AppTheme {
           minimumSize: const Size.fromHeight(54),
           textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(14),
           ),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(foregroundColor: AppColors.primaryDark),
+        style: TextButton.styleFrom(foregroundColor: AppColors.accentFor(b)),
       ),
 
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: isDark ? AppColors.cardDark : Colors.white,
+        // Glassy fields like the site: translucent white over the grey page in
+        // dark, solid white in light.
+        fillColor: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.white,
         hintStyle: TextStyle(color: scheme.onSurfaceVariant),
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
+          horizontal: 18,
+          vertical: 18,
         ),
         border: _inputBorder(scheme.outline),
         enabledBorder: _inputBorder(scheme.outline),
-        focusedBorder: _inputBorder(AppColors.primary, width: 1.6),
+        focusedBorder: _inputBorder(AppColors.accentFor(b), width: 1.6),
         prefixIconColor: scheme.onSurfaceVariant,
         suffixIconColor: scheme.onSurfaceVariant,
       ),
 
       chipTheme: ChipThemeData(
         backgroundColor: isDark ? AppColors.cardDark : const Color(0xFFF0F2EA),
+        // Selected chips read as a clean accent tint (not a murky olive box).
+        selectedColor: AppColors.accentFor(b).withValues(alpha: 0.18),
+        checkmarkColor: AppColors.accentFor(b),
         side: BorderSide(color: scheme.outline),
         labelStyle: TextStyle(color: scheme.onSurface, fontSize: 12),
+        secondaryLabelStyle: TextStyle(color: scheme.onSurface, fontSize: 12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
 
       dividerTheme: DividerThemeData(color: scheme.outline, thickness: 1),
       iconTheme: IconThemeData(color: scheme.onSurface),
-      progressIndicatorTheme: const ProgressIndicatorThemeData(
-        color: AppColors.primary,
+      checkboxTheme: CheckboxThemeData(
+        fillColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? AppColors.accentFor(b)
+              : Colors.transparent,
+        ),
+        checkColor: WidgetStateProperty.all(AppColors.onAccentFor(b)),
+        side: BorderSide(color: scheme.outline, width: 1.5),
+      ),
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: AppColors.accentFor(b),
       ),
     );
   }
