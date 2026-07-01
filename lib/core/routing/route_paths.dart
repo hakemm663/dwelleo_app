@@ -11,8 +11,17 @@ abstract final class RoutePaths {
   /// Login (Welcome Back).
   static const String login = '/login';
 
+  /// Forgot-password wizard (email → code → new password).
+  static const String forgotPassword = '/forgot-password';
+
   /// Account-type selection — part of the SIGN-UP flow, not onboarding.
   static const String signupRole = '/signup/role';
+
+  /// Sign-up step 2 — personal info form (carries the chosen role as `extra`).
+  static const String signupForm = '/signup/form';
+
+  /// Sign-up step 3 — OTP verification (carries the email as `extra`).
+  static const String signupOtp = '/signup/verify';
 
   static const String propertySearch = '/properties';
   static const String propertyDetail = '/properties/:slug';
