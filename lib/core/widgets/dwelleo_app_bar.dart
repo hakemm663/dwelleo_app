@@ -37,6 +37,7 @@ class DwelleoAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isArabic = context.watch<LocaleCubit>().state.languageCode == 'ar';
     return AppBar(
       automaticallyImplyLeading: false,
       backgroundColor: transparent ? Colors.transparent : null,
@@ -44,7 +45,9 @@ class DwelleoAppBar extends StatelessWidget implements PreferredSizeWidget {
       scrolledUnderElevation: 0,
       titleSpacing: 16,
       title: Image.asset(
-        isDark ? AppImage.wordmarkDark : AppImage.wordmarkLight,
+        // Logo switches with BOTH language (EN/AR) and theme (light/dark),
+        // exactly like the dwelleo.sa header.
+        AppImage.wordmark(isArabic: isArabic, isDark: isDark),
         height: 24,
         // Keep the bar usable even if the brand asset is missing.
         errorBuilder: (_, _, _) => Text(

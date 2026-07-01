@@ -177,6 +177,9 @@ class _Slide extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    // Accent flips by theme (purple in light, lime in dark) — applied to the
+    // glow AND the hero mark so the first slide is never a desaturated grey PNG.
+    final accent = AppColors.accentFor(theme.brightness);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
@@ -193,7 +196,7 @@ class _Slide extends StatelessWidget {
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppColors.primary.withValues(alpha: 0.10 + 0.22 * g),
+                      accent.withValues(alpha: 0.10 + 0.22 * g),
                       Colors.transparent,
                     ],
                   ),
@@ -202,14 +205,17 @@ class _Slide extends StatelessWidget {
                 child: Transform.scale(scale: 0.96 + 0.06 * g, child: child),
               );
             },
+            // Uniform ~116px hero across all three slides; the logo PNG is
+            // tinted to the accent via srcIn so it matches the icon slides.
             child: data.isLogo
                 ? Image.asset(
-                    theme.brightness == Brightness.dark
-                        ? AppImage.onboardingDark
-                        : AppImage.onboardingLight,
-                    width: 150,
+                    AppImage.onboardingDark,
+                    width: 116,
+                    height: 116,
+                    color: accent,
+                    colorBlendMode: BlendMode.srcIn,
                   )
-                : Icon(data.icon, size: 100, color: AppColors.primary),
+                : Icon(data.icon, size: 116, color: accent),
           ),
           const SizedBox(height: 44),
           Text(
