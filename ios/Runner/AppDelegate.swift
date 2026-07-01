@@ -18,10 +18,14 @@ import UIKit
 #else
     // FirebaseCore not available; skip configuration to allow build without Firebase.
 #endif
-    // Google Maps native SDK key (iOS), Google Cloud project dwelleo-60f38.
-    // Restrict to the app's bundle id in the console before release.
+    // Google Maps native SDK key (iOS). Read from Info.plist ($(MAPS_API_KEY)),
+    // which is populated by the GITIGNORED ios/Flutter/Secrets.xcconfig — the key
+    // is NEVER hardcoded/committed. Restrict it to the app's bundle IDs.
 #if canImport(GoogleMaps)
-    GMSServices.provideAPIKey("AIzaSyBOGg7aefYtU8t5GLQWxcEJPjYzYRgWxJo")
+    if let mapsKey = Bundle.main.object(forInfoDictionaryKey: "MapsApiKey") as? String,
+       !mapsKey.isEmpty, !mapsKey.hasPrefix("PASTE_") {
+      GMSServices.provideAPIKey(mapsKey)
+    }
 #else
     // GoogleMaps not available; skip API key configuration to allow build without Google Maps.
 #endif

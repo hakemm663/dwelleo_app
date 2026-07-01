@@ -30,12 +30,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <!-- Google Maps native SDK key (Android), Google Cloud project
-             dwelleo-60f38. Restrict to the app's package name + SHA-1 in the
-             console before release. -->
+        <!-- Google Maps native SDK key (Android). Injected from the GITIGNORED
+             android/secrets.properties via a manifest placeholder — never
+             hardcoded/committed. Restrict to package + SHA-1 in the console. -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyC3Y2hQ6rzdKNfIboUXIe07fX3IMu_Pr_Y" />
+            android:value="${MAPS_API_KEY}" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

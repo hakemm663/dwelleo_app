@@ -73,6 +73,11 @@ service-account.json
 *.pem
 secrets.json
 
+# Native Maps API keys (injected at build time — never commit real values)
+ios/Flutter/Secrets.xcconfig
+android/secrets.properties
+android/local.properties
+
 # Fastlane
 fastlane/Appfile
 fastlane/Matchfile

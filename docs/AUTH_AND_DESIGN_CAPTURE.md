@@ -61,7 +61,7 @@ Phase-2 ("Personal Information") fields seen on `/register` (★ = required):
   No backend needed for the country list.
 
 ## 4) Location picker (Google Maps) — REAL
-- **Maps API key (from the live site):** `AIzaSyCVW2DlJZJPq5-6U62UeREqfAmoIyb2s_Q`
+- **Maps API key (from the live site):** `<redacted — leaked key; rotated in Google Cloud>`
   (Google Maps JS key — for native, create/restrict an Android + iOS key in the same
   Google Cloud project; this web key may be HTTP-referrer-restricted, so confirm with
   the client before shipping).
@@ -120,7 +120,7 @@ Build an **Auth feature** (clean-arch, per CLAUDE.md): `AuthRemoteDataSource`
 | Login | `POST /auth/login` `{email,password}` (CONFIRMED) |
 | Register | `POST /auth/register` (capture body) |
 | City list | `GET /lookup` → `data.cities` |
-| Maps key | `AIzaSyCVW2DlJZJPq5-6U62UeREqfAmoIyb2s_Q` |
+| Maps key | `<redacted — leaked key; rotated in Google Cloud>` |
 | Card (dark) | bg `rgba(255,255,255,.10)`, radius 24, border 1px `rgba(255,255,255,.10)` |
 | Page bg (dark) | `#1B1B1B` |
 | Phone field | `intl_phone_field`-style, default SA +966, searchable |
