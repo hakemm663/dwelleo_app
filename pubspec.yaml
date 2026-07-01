@@ -65,6 +65,8 @@ dependencies:
   firebase_remote_config: ^6.5.3
   firebase_app_check: ^0.4.5
   freerasp: ^8.0.0
+  intl_phone_field: ^3.2.0
+  geocoding: ^4.0.0
 
 dev_dependencies:
   flutter_test:
@@ -97,5 +99,15 @@ flutter:
     - assets/images/brand/
     - assets/icons/
     - assets/svg/
+
+  # Dwelleo brand typeface (RocGrotesk) — the exact font dwelleo.sa serves,
+  # converted from the site's woff2 to ttf so the app matches the web fonts.
+  fonts:
+    - family: RocGrotesk
+      fonts:
+        - asset: assets/fonts/roc-grotesk-regular.ttf
+          weight: 400
+        - asset: assets/fonts/roc-grotesk-bold.ttf
+          weight: 700
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
