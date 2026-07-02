@@ -133,7 +133,7 @@ class _CardImage extends StatelessWidget {
               right: 10,
               child: _Badge(
                 label: property.listingType!.isForRent ? 'Rent' : 'Sale',
-                color: AppColors.primaryDark,
+                color: AppColors.accentFor(Theme.of(context).brightness),
               ),
             ),
         ],
@@ -175,7 +175,10 @@ class _Badge extends StatelessWidget {
       child: Text(
         label,
         style: TextStyle(
-          color: color == AppColors.primaryDark ? AppColors.ink : Colors.white,
+          // Pick a readable foreground for whatever accent the theme uses.
+          color: ThemeData.estimateBrightnessForColor(color) == Brightness.dark
+              ? Colors.white
+              : AppColors.ink,
           fontSize: 11,
           fontWeight: FontWeight.w700,
         ),

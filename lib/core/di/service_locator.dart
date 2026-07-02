@@ -10,6 +10,16 @@ import '../network/interceptors/auth_interceptor.dart';
 import '../network/interceptors/locale_interceptor.dart';
 import '../storage/secure_storage.dart';
 import '../theme/theme_cubit.dart';
+import '../lookup/lookup_service.dart';
+import '../../features/auth/data/datasources/auth_remote_data_source.dart';
+import '../../features/auth/data/repositories/auth_repository_impl.dart';
+import '../../features/auth/domain/repositories/auth_repository.dart';
+import '../../features/auth/domain/usecases/login.dart';
+import '../../features/auth/domain/usecases/register.dart';
+import '../../features/auth/domain/usecases/verify_otp.dart';
+import '../../features/auth/domain/usecases/forgot_password_usecases.dart';
+import '../../features/auth/presentation/cubit/auth_cubit.dart';
+import '../../features/auth/presentation/cubit/forgot_password_cubit.dart';
 import '../../features/properties/data/datasources/property_remote_data_source.dart';
 import '../../features/properties/data/repositories/property_repository_impl.dart';
 import '../../features/properties/domain/repositories/property_repository.dart';
@@ -55,6 +65,41 @@ Future<void> setupServiceLocator() async {
         LocaleInterceptor(sl<SecureStorage>()),
         AuthInterceptor(sl<SecureStorage>(), refreshDio),
       ],
+    ),
+  );
+
+  // ── Lookups (cities, …) ────────────────────────────────────────────────────
+  sl.registerLazySingleton<LookupService>(() => LookupService(sl<Dio>()));
+
+  // ── Feature: Auth ──────────────────────────────────────────────────────────
+  sl.registerLazySingleton<AuthRemoteDataSource>(
+    () => AuthRemoteDataSourceImpl(sl<Dio>()),
+  );
+  sl.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(sl<AuthRemoteDataSource>()),
+  );
+  sl.registerLazySingleton(() => Login(sl<AuthRepository>()));
+  sl.registerLazySingleton(() => Register(sl<AuthRepository>()));
+  sl.registerLazySingleton(() => VerifyOtp(sl<AuthRepository>()));
+  sl.registerLazySingleton(() => ResendOtp(sl<AuthRepository>()));
+  sl.registerFactory(
+    () => AuthCubit(
+      sl<Login>(),
+      sl<Register>(),
+      sl<VerifyOtp>(),
+      sl<ResendOtp>(),
+      sl<SecureStorage>(),
+    ),
+  );
+  // Forgot password (send-otp → verify → reset-password).
+  sl.registerLazySingleton(() => SendResetCode(sl<AuthRepository>()));
+  sl.registerLazySingleton(() => VerifyResetCode(sl<AuthRepository>()));
+  sl.registerLazySingleton(() => ResetPassword(sl<AuthRepository>()));
+  sl.registerFactory(
+    () => ForgotPasswordCubit(
+      sl<SendResetCode>(),
+      sl<VerifyResetCode>(),
+      sl<ResetPassword>(),
     ),
   );
 

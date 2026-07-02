@@ -10,9 +10,10 @@ abstract final class AppConstants {
   static const String themeModeKey = 'theme_mode';
   static const String onboardingDoneKey = 'onboarding_done';
 
-  // Network timeouts (ms)
-  static const int connectTimeout = 15000;
-  static const int receiveTimeout = 30000;
+  // Network timeouts (ms). The dwelleo API can be slow on cold auth requests,
+  // so the receive window is generous to avoid spurious timeouts.
+  static const int connectTimeout = 20000;
+  static const int receiveTimeout = 45000;
 
   // Pagination
   static const int defaultPageSize = 20;

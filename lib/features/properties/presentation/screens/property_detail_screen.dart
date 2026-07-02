@@ -295,16 +295,17 @@ class _Pill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: AppColors.primary,
+        color: AppColors.accentFor(brightness),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
         label,
-        style: const TextStyle(
-          color: AppColors.ink,
+        style: TextStyle(
+          color: AppColors.onAccentFor(brightness),
           fontWeight: FontWeight.w700,
           fontSize: 12,
         ),

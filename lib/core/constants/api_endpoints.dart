@@ -37,16 +37,42 @@ abstract final class ApiEndpoints {
   static const String marketCities = '$_base/market/cities';
   static const String marketDistricts = '$_base/market/districts';
 
+  // ---- Auth: email/password (CONFIRMED live) -------------------------------
+  // POST {email,password} -> envelope {message,data:{...}}. The exact token
+  // field inside `data` is @bodyPending (capture from a real login).
+  static const String login = '$_base/auth/login';
+
   // ---- Auth: NAFATH (Saudi national identity) ------------------------------
-  // NOTE: auth is Nafath-based, NOT email/password. Flow: initiate -> poll status -> complete.
+  // NOTE: Nafath flow (alongside email/password). initiate -> poll status -> complete.
   @bodyPending
   static const String nafathInitiate = '$_base/auth/nafath/initiate';
   @bodyPending
   static const String nafathStatus = '$_base/auth/nafath/status';
   @bodyPending
   static const String nafathComplete = '$_base/auth/nafath/complete';
-  @bodyPending
+  // POST — creates the account and issues a 4-digit OTP; NO login token is
+  // returned (the user must verify the OTP, then log in). Verified shapes in
+  // docs/HANDOFF_AUTH_FINISH.md §1.
   static const String register = '$_base/auth/register';
+
+  // OTP verify/resend for the sign-up flow. PENDING: confirm the exact path +
+  // body keys from a live register→"Verify Code" capture (HANDOFF §1 ACTION).
+  // Doc's best guess: POST /auth/verify-otp {email, code}.
+  @bodyPending
+  static const String verifyOtp = '$_base/auth/verify-otp';
+  @bodyPending
+  static const String resendOtp = '$_base/auth/resend-otp';
+
+  // ---- Forgot password (VERIFIED live — HANDOFF §Forgot Password) ----------
+  // 1) POST /auth/send-otp  {email, type:"forgot_password"} -> {verification_token}
+  //    (rate-limited; only "forgot_password" is a valid type).
+  // 2) POST /auth/verify    {verification_token, otp}
+  // 3) POST /auth/reset-password {verification_token, new_password,
+  //    new_password_confirmation} (pw: upper+lower+digit+symbol, min 8).
+  static const String sendOtp = '$_base/auth/send-otp';
+  static const String verify = '$_base/auth/verify';
+  static const String resetPassword = '$_base/auth/reset-password';
+
   @bodyPending
   static const String authConsent = '$_base/auth/consent';
   @bodyPending

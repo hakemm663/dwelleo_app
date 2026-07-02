@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/role_selection_screen.dart';
+import '../../features/auth/presentation/screens/signup_form_screen.dart';
+import '../../features/auth/presentation/screens/verification_code_screen.dart';
 import '../../features/onboarding/presentation/screens/language_selection_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/properties/presentation/screens/properties_list_screen.dart';
@@ -35,9 +38,26 @@ class AppRouter {
         builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
+        path: RoutePaths.forgotPassword,
+        name: RoutePaths.forgotPassword,
+        builder: (context, state) => const ForgotPasswordScreen(),
+      ),
+      GoRoute(
         path: RoutePaths.signupRole,
         name: RoutePaths.signupRole,
         builder: (context, state) => const RoleSelectionScreen(),
+      ),
+      GoRoute(
+        path: RoutePaths.signupForm,
+        name: RoutePaths.signupForm,
+        builder: (context, state) =>
+            SignupFormScreen(role: state.extra as String?),
+      ),
+      GoRoute(
+        path: RoutePaths.signupOtp,
+        name: RoutePaths.signupOtp,
+        builder: (context, state) =>
+            VerificationCodeScreen(email: (state.extra as String?) ?? ''),
       ),
       GoRoute(
         path: RoutePaths.propertySearch,
